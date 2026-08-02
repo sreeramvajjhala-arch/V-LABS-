@@ -1,0 +1,366 @@
+/**
+ * V LABS — Application JavaScript Engine
+ * UI Updates: Uses clean Robot Icon avatar for AI chat messages.
+ */
+
+// ==========================================
+// CONFIGURATION
+// ==========================================
+const APPS_SCRIPT_WEBHOOK_URL = 'YOUR_APPS_SCRIPT_WEBHOOK_URL';
+
+// Conversation history state passed to secure backend proxy
+let conversationHistory = [];
+
+// ==========================================
+// 1. HERO TERMINAL TYPEWRITER ANIMATION
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    initHeroTerminalTypewriter();
+    switchTab('healthcare'); // Initialize default tab
+});
+
+function initHeroTerminalTypewriter() {
+    const botMsgContainer = document.getElementById('hero-bot-msg');
+    if (!botMsgContainer) return;
+
+    const fullResponse = "Yes! We are open from 9 AM to 8 PM. Would you like to book a slot?";
+    botMsgContainer.innerHTML = '<span id="typewriter-text"></span><span class="inline-block w-1.5 h-4 bg-white ml-1 animate-caret"></span>';
+    
+    const textSpan = document.getElementById('typewriter-text');
+    let index = 0;
+
+    function typeChar() {
+        if (index < fullResponse.length) {
+            textSpan.textContent += fullResponse.charAt(index);
+            index++;
+            setTimeout(typeChar, 35 + Math.random() * 25);
+        }
+    }
+
+    setTimeout(typeChar, 600);
+}
+
+// ==========================================
+// 2. INDUSTRY USE-CASES TAB SWITCHER
+// ==========================================
+const useCasesData = {
+    healthcare: {
+        title: "Healthcare & Specialized Clinics",
+        badge: "24/7 Patient Triage & Appointment Booking",
+        icon: "fa-user-doctor",
+        flow: [
+            { step: "1. Patient Inquiry", desc: "Patient texts on WhatsApp: 'Do you have dental consultation available tomorrow evening?'" },
+            { step: "2. Gemini AI Reply (3s)", desc: "AI checks doctor schedules, replies: 'Yes! Dr. Sharma is available at 6:30 PM. Shall I confirm your slot?'" },
+            { step: "3. Auto CRM Logging", desc: "Patient name, mobile #, and appointment timestamp logged straight to clinic Google Sheet." }
+        ],
+        impact: "Zero missed appointments outside OPD hours & 4x faster patient onboarding."
+    },
+    gyms: {
+        title: "High-Ticket Fitness Gyms & Studios",
+        badge: "Instant Lead Capture & Day-Pass Booking",
+        icon: "fa-dumbbell",
+        flow: [
+            { step: "1. Visitor Inquiry", desc: "Prospect scans QR code or clicks Instagram ad: 'What are your monthly membership rates?'" },
+            { step: "2. Gemini AI Reply (3s)", desc: "AI replies: 'Our VIP All-Access pass starts at ₹2,999/mo. Would you like a FREE 1-Day Trial Pass today?'" },
+            { step: "3. Lead Conversion", desc: "Prospect provides phone #; trial pass generated and lead details pushed to Sales Team sheet." }
+        ],
+        impact: "300% boost in trial pass redemptions without hiring extra front-desk staff."
+    },
+    retail: {
+        title: "Retail & Electronics Phone Shops",
+        badge: "Stock Inquiries & Trade-in Price Quotes",
+        icon: "fa-mobile-screen-button",
+        flow: [
+            { step: "1. Customer Inquiry", desc: "Customer texts: 'Do you have iPhone 15 Pro Max 256GB Natural Titanium in stock?'" },
+            { step: "2. Gemini AI Reply (3s)", desc: "AI replies: 'Yes, 2 units left at ₹1,29,900! Want me to reserve one for pick-up at our Jagadamba branch?'" },
+            { step: "3. Direct Reservation", desc: "Reserve token sent to customer WhatsApp and manager notified instantly." }
+        ],
+        impact: "Prevents shoppers from buying from competitors while waiting for shop replies."
+    },
+    caterers: {
+        title: "Event Caterers & Function Halls",
+        badge: "Instant Menu Selection & Price Estimation",
+        icon: "fa-utensils",
+        flow: [
+            { step: "1. Host Inquiry", desc: "Client texts: 'Need catering for 250 guests wedding reception next month in MVP Colony.'" },
+            { step: "2. Gemini AI Reply (3s)", desc: "AI sends PDF menu link, calculates approximate estimate, and offers tasting session booking." },
+            { step: "3. Sheet Lead Sync", desc: "Event date, guest count, and contact logged to owner's master booking sheet." }
+        ],
+        impact: "Qualifies high-budget leads automatically 24 hours a day."
+    }
+};
+
+function switchTab(tabKey) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-white', 'bg-white', 'text-crimson-950', 'font-bold');
+        btn.classList.add('border-mutedGray-300/30', 'bg-crimson-900/60', 'text-mutedGray-200', 'font-medium');
+    });
+
+    const activeBtn = document.getElementById(`tab-${tabKey}`);
+    if (activeBtn) {
+        activeBtn.classList.remove('border-mutedGray-300/30', 'bg-crimson-900/60', 'text-mutedGray-200', 'font-medium');
+        activeBtn.classList.add('active', 'border-white', 'bg-white', 'text-crimson-950', 'font-bold');
+    }
+
+    const container = document.getElementById('use-case-content');
+    const data = useCasesData[tabKey];
+    if (!container || !data) return;
+
+    container.innerHTML = `
+        <div class="flex flex-col lg:flex-row items-start justify-between gap-8">
+            <div class="lg:w-1/2 space-y-4">
+                <div class="inline-flex items-center space-x-2 bg-white/10 border border-white/30 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                    <i class="fa-solid ${data.icon}"></i>
+                    <span>${data.badge}</span>
+                </div>
+                <h3 class="font-heading text-2xl sm:text-3xl font-bold text-white">${data.title}</h3>
+                
+                <div class="space-y-3 pt-2">
+                    ${data.flow.map(item => `
+                        <div class="bg-crimson-950/60 border border-mutedGray-300/20 p-4 rounded-xl">
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-1">${item.step}</h4>
+                            <p class="text-sm text-mutedGray-200">${item.desc}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="lg:w-1/2 w-full glass-card bg-crimson-950/90 rounded-2xl p-6 border-white/40 relative">
+                <div class="flex items-center justify-between border-b border-mutedGray-300/20 pb-3 mb-4">
+                    <span class="text-xs font-mono text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                        <span>Expected Business ROI</span>
+                    </span>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">24h Turnkey Ready</span>
+                </div>
+
+                <div class="bg-crimson-900/60 p-5 rounded-xl border border-mutedGray-300/20 space-y-3 mb-4">
+                    <p class="text-xs text-mutedGray-300 font-semibold uppercase tracking-wider">Business Impact:</p>
+                    <p class="text-lg font-bold text-white leading-snug">${data.impact}</p>
+                </div>
+
+                <button onclick="openChatModal('Get custom setup for ${data.title}')" class="w-full bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg">
+                    <span>Deploy For Your Business</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// 3. MOBILE MENU & CHAT MODAL LOGIC
+// ==========================================
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('mobile-menu-icon');
+    if (!menu) return;
+
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        if (icon) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-xmark');
+        }
+        setTimeout(() => {
+            menu.classList.remove('opacity-0', '-translate-y-2');
+        }, 10);
+    } else {
+        menu.classList.add('opacity-0', '-translate-y-2');
+        if (icon) {
+            icon.classList.remove('fa-xmark');
+            icon.classList.add('fa-bars');
+        }
+        setTimeout(() => {
+            menu.classList.add('hidden');
+        }, 300);
+    }
+}
+
+function toggleChatModal() {
+    const modal = document.getElementById('chat-modal');
+    const modalCard = document.getElementById('chat-modal-card');
+
+    if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalCard.classList.remove('translate-y-full');
+        }, 10);
+    } else {
+        modal.classList.add('opacity-0');
+        modalCard.classList.add('translate-y-full');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+}
+
+function openChatModal(prefillMessage = '') {
+    const modal = document.getElementById('chat-modal');
+    if (modal.classList.contains('hidden')) {
+        toggleChatModal();
+    }
+    if (prefillMessage) {
+        const chatInput = document.getElementById('chat-input');
+        if (chatInput) {
+            chatInput.value = prefillMessage;
+            chatInput.focus();
+        }
+    }
+}
+
+function sendQuickPrompt(promptText) {
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+        chatInput.value = promptText;
+        handleChatSubmit(new Event('submit'));
+    }
+}
+
+// ==========================================
+// 4. SECURE BACKEND GATEWAY CHAT SUBMISSION
+// ==========================================
+async function handleChatSubmit(e) {
+    e.preventDefault();
+    const inputEl = document.getElementById('chat-input');
+    const userMessage = inputEl.value.trim();
+    if (!userMessage) return;
+
+    // Display user message in chat UI
+    appendChatMessage('user', userMessage);
+    inputEl.value = '';
+
+    // Append to local conversation history
+    conversationHistory.push({ role: 'user', content: userMessage });
+
+    // Show loading spinner
+    const loadingId = appendLoadingIndicator();
+
+    try {
+        let aiReplyText = '';
+
+        if (APPS_SCRIPT_WEBHOOK_URL === 'YOUR_APPS_SCRIPT_WEBHOOK_URL' || !APPS_SCRIPT_WEBHOOK_URL) {
+            // Local fallback simulation when Webhook URL is unconfigured
+            await new Promise(r => setTimeout(r, 850));
+            aiReplyText = getFallbackAiResponse(userMessage);
+        } else {
+            // SECURE FETCH TO GOOGLE APPS SCRIPT WEBHOOK PROXY
+            const payload = {
+                action: 'chat',
+                message: userMessage,
+                history: conversationHistory
+            };
+
+            const response = await fetch(APPS_SCRIPT_WEBHOOK_URL, {
+                method: 'POST',
+                redirect: 'follow', // Crucial for Google Apps Script redirects
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
+            const resData = await response.json();
+            aiReplyText = resData.reply || getFallbackAiResponse(userMessage);
+        }
+
+        // Save AI reply to history
+        conversationHistory.push({ role: 'model', content: aiReplyText });
+
+        removeChatMessage(loadingId);
+        appendChatMessage('bot', aiReplyText);
+
+    } catch (error) {
+        console.warn('Backend proxy fetch failed, relying on client safety fallback:', error);
+        removeChatMessage(loadingId);
+        const fallbackText = getFallbackAiResponse(userMessage);
+        appendChatMessage('bot', fallbackText);
+    }
+}
+
+// Client Fallback Intelligence Generator
+function getFallbackAiResponse(msg) {
+    const lower = msg.toLowerCase();
+    if (lower.includes('price') || lower.includes('cost') || lower.includes('fee')) {
+        return "Our turnkey setup is a flat one-time fee with 0 monthly retainers! What is your business name and WhatsApp number to send full details?";
+    }
+    if (lower.includes('demo') || lower.includes('prototype') || lower.includes('24h') || lower.includes('schedule')) {
+        return "Awesome! We deliver full prototype websites with AI receptionists in 24 hours. What's your WhatsApp number & business name?";
+    }
+    if (/\d{10}/.test(msg) || lower.includes('phone') || lower.includes('number')) {
+        return "Thank you! Got your details. Our Vizag team will contact you on WhatsApp within 2 hours with your prototype preview.";
+    }
+    return "Hello! I'm V Labs AI. We build 24h custom websites & WhatsApp bots. Could you share your business name and WhatsApp number?";
+}
+
+// UI Helpers for Chat Messages with Robot Icon Avatar
+function appendChatMessage(sender, text) {
+    const feed = document.getElementById('chat-feed');
+    if (!feed) return;
+
+    const msgDiv = document.createElement('div');
+    msgDiv.className = sender === 'user' ? 'flex items-start space-x-2.5 justify-end' : 'flex items-start space-x-2.5';
+
+    if (sender === 'user') {
+        msgDiv.innerHTML = `
+            <div class="bg-white/20 border border-white/30 rounded-2xl rounded-tr-none p-3.5 text-white max-w-[85%]">
+                ${escapeHtml(text)}
+            </div>
+        `;
+    } else {
+        msgDiv.innerHTML = `
+            <div class="w-7 h-7 rounded-full bg-white text-crimson-950 font-extrabold text-xs flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-robot text-xs text-crimson-950"></i>
+            </div>
+            <div class="bg-crimson-800/70 border border-mutedGray-300/25 rounded-2xl rounded-tl-none p-3.5 text-white max-w-[85%]">
+                ${escapeHtml(text)}
+            </div>
+        `;
+    }
+
+    feed.appendChild(msgDiv);
+    feed.scrollTop = feed.scrollHeight;
+}
+
+function appendLoadingIndicator() {
+    const feed = document.getElementById('chat-feed');
+    if (!feed) return null;
+
+    const id = 'loading-' + Date.now();
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = id;
+    loadingDiv.className = 'flex items-start space-x-2.5';
+    loadingDiv.innerHTML = `
+        <div class="w-7 h-7 rounded-full bg-white text-crimson-950 font-extrabold text-xs flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-robot text-xs text-crimson-950"></i>
+        </div>
+        <div class="bg-crimson-800/70 border border-mutedGray-300/25 rounded-2xl rounded-tl-none p-3.5 text-white max-w-[85%] flex items-center space-x-1">
+            <span class="w-2 h-2 rounded-full bg-white animate-bounce"></span>
+            <span class="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:0.2s]"></span>
+            <span class="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:0.4s]"></span>
+        </div>
+    `;
+    feed.appendChild(loadingDiv);
+    feed.scrollTop = feed.scrollHeight;
+    return id;
+}
+
+function removeChatMessage(id) {
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+function escapeHtml(str) {
+    if (typeof str !== 'string') return String(str ?? '');
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+}

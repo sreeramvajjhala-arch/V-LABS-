@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>V Labs — Vizag's 24-Hour Digital Studio & Business Automation</title>
+    <meta name="description" content="Automate your business overnight with V Labs. Custom 1-page websites, WhatsApp Cloud API bots, Gemini AI receptionists, and zero monthly retainers.">
+    
+    <!-- Google Fonts: Cinzel & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crimson: {
+                            950: '#120101',
+                            900: '#1A0202', // End Color (Dark Maroon / Near-Black)
+                            800: '#2D0505',
+                            700: '#4A0000', // Start Color (Deep Crimson)
+                            600: '#6B0000',
+                            500: '#8B0000',
+                        },
+                        pureWhite: '#FFFFFF', // Primary Text & Details
+                        mutedGray: {
+                            100: '#F5F5F5',
+                            200: '#E5E5E5', // Muted Soft White
+                            300: '#D1D1D1', // Secondary Text / Subtle Borders
+                            400: '#9CA3AF',
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Styling & Strict GPU-Accelerated Animations (transform & opacity ONLY) */
+        body {
+            background: linear-gradient(180deg, #4A0000 0%, #1A0202 100%);
+            color: #FFFFFF;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            will-change: auto;
+        }
+
+        /* Safe Area Insets for Mobile Notched Devices */
+        .safe-pb {
+            padding-bottom: max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom)));
+        }
+        .safe-bottom-btn {
+            bottom: max(1.5rem, calc(1.5rem + env(safe-area-inset-bottom)));
+        }
+
+        /* Mobile Menu Drawer Animation */
+        #mobile-menu {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            will-change: transform, opacity;
+        }
+
+        /* Glassmorphic Container Rules with Pure White / Light Gray Accents */
+        .glass-card {
+            background: rgba(45, 5, 5, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(229, 229, 229, 0.2);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            will-change: transform, opacity;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.45);
+        }
+
+        .glass-nav {
+            background: rgba(26, 2, 2, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(229, 229, 229, 0.15);
+        }
+
+        .glass-modal {
+            background: rgba(30, 3, 3, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            will-change: transform, opacity;
+        }
+
+        /* Fallback for browsers without backdrop-filter support */
+        @supports not (backdrop-filter: blur(12px)) {
+            .glass-card, .glass-modal {
+                background: rgba(45, 5, 5, 0.95) !important;
+            }
+            .glass-nav {
+                background: rgba(26, 2, 2, 0.95) !important;
+            }
+        }
+
+        /* Ambient Hero Halo */
+        @keyframes hero-halo-pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.55;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.15);
+                opacity: 0.85;
+            }
+        }
+
+        .ambient-halo {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(74, 0, 0, 0.5) 45%, rgba(26, 2, 2, 0) 72%);
+            filter: blur(50px);
+            animation: hero-halo-pulse 6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+            will-change: transform, opacity;
+        }
+
+        /* Floating Button Mobile Aura Pulse */
+        @keyframes aura-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.08);
+                opacity: 0.9;
+            }
+        }
+
+        .aura-btn {
+            animation: aura-pulse 2.5s ease-in-out infinite;
+            will-change: transform, opacity;
+        }
+
+        /* Custom Scrollbar for Chat & Terminal */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(26, 2, 2, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(229, 229, 229, 0.3);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Typing Caret Animation */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .animate-caret {
+            animation: blink 0.8s infinite;
+            will-change: opacity;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-crimson-700 via-crimson-800 to-crimson-900 text-white min-h-screen relative selection:bg-white selection:text-crimson-950">
+
+    <!-- Ambient Hero Halo Background Effect -->
+    <div class="ambient-halo"></div>
+
+    <!-- 1. Header / Sticky Navbar -->
+    <header id="navbar" class="sticky top-0 z-40 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <!-- Brand Logo with Integrated Official Emblem -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="p-1 rounded-xl bg-crimson-950/80 border border-white/20 shadow-md group-hover:border-white/50 transition-colors">
+                    <img src="assets/vlabs-logo.jpg" alt="V Labs Official Logo" class="h-10 sm:h-12 w-auto object-contain rounded-lg">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading font-black text-xl sm:text-2xl tracking-wider text-white group-hover:text-mutedGray-200 transition-colors">
+                        V LABS
+                    </span>
+                    <span class="text-[9px] sm:text-[10px] tracking-[0.2em] font-semibold text-mutedGray-300 uppercase">
+                        Web & Business Automation
+                    </span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-mutedGray-200">
+                <a href="#hero" class="hover:text-white transition-colors">Home</a>
+                <a href="#comparison" class="hover:text-white transition-colors">Why V Labs</a>
+                <a href="#use-cases" class="hover:text-white transition-colors">Industry Demos</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Turnkey Setup</a>
+            </nav>
+
+            <!-- Navbar CTA Button & Mobile Toggle -->
+            <div class="flex items-center space-x-3">
+                <button onclick="openChatModal('Get 24h Prototype')" class="border border-white text-white hover:bg-white hover:text-crimson-950 font-semibold px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm tracking-wide transition-all duration-300 shadow-lg active:scale-95 flex items-center space-x-1.5 sm:space-x-2">
+                    <i class="fa-solid fa-bolt text-white text-xs sm:text-sm"></i>
+                    <span>Get 24h Prototype</span>
+                </button>
+
+                <!-- Mobile Navigation Toggle Button -->
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-xl bg-crimson-950/80 border border-white/20 text-white flex items-center justify-center hover:border-white/50 focus:outline-none transition-colors" aria-label="Toggle navigation menu">
+                    <i id="mobile-menu-icon" class="fa-solid fa-bars text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer Overlay -->
+        <div id="mobile-menu" class="hidden md:hidden glass-nav border-t border-mutedGray-300/10 px-4 pt-3 pb-5 space-y-3 opacity-0 -translate-y-2">
+            <a href="#hero" onclick="toggleMobileMenu()" class="block py-2 px-3 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors">Home</a>
+            <a href="#comparison" onclick="toggleMobileMenu()" class="block py-2 px-3 rounded-lg text-sm font-medium text-mutedGray-200 hover:text-white hover:bg-white/10 transition-colors">Why V Labs</a>
+            <a href="#use-cases" onclick="toggleMobileMenu()" class="block py-2 px-3 rounded-lg text-sm font-medium text-mutedGray-200 hover:text-white hover:bg-white/10 transition-colors">Industry Demos</a>
+            <a href="#pricing" onclick="toggleMobileMenu()" class="block py-2 px-3 rounded-lg text-sm font-medium text-mutedGray-200 hover:text-white hover:bg-white/10 transition-colors">Turnkey Setup</a>
+            <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs text-mutedGray-300">
+                <span>Vizag's 24h Studio</span>
+                <a href="https://wa.me/996655273" target="_blank" rel="noopener noreferrer" class="text-emerald-400 font-semibold flex items-center space-x-1 hover:text-emerald-300 transition-colors">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>Chat on WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10">
+        <!-- 2. Hero Section -->
+        <section id="hero" class="relative pt-10 pb-20 md:pt-16 md:pb-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <!-- Prominent Logo Display in Hero -->
+            <div class="mb-6 inline-block relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-white/30 via-crimson-600 to-white/30 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                <div class="relative bg-crimson-950/90 border border-white/30 p-3 sm:p-4 rounded-2xl shadow-2xl inline-flex items-center justify-center">
+                    <img src="assets/vlabs-logo.jpg" alt="V Labs Emblem" fetchpriority="high" decoding="async" class="h-20 sm:h-28 md:h-36 w-auto object-contain rounded-xl shadow-lg">
+                </div>
+            </div>
+
+            <!-- Hero Badge -->
+            <div class="inline-flex items-center space-x-2 bg-crimson-800/80 border border-mutedGray-300/30 rounded-full px-4 py-1.5 mb-6 backdrop-blur-md">
+                <span class="flex h-2 w-2 rounded-full bg-white animate-pulse"></span>
+                <span class="text-xs font-bold tracking-widest text-white uppercase">⚡ VIZAG'S 24-HOUR DIGITAL STUDIO</span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="font-heading font-extrabold text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white max-w-5xl mx-auto leading-[1.15] mb-6">
+                Automate Your Business Overnight.<br class="hidden sm:inline">
+                <span class="text-mutedGray-200 border-b-2 border-white/40 pb-1">
+                    Zero Monthly Retainers.
+                </span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="text-base sm:text-lg md:text-xl text-mutedGray-200 max-w-3xl mx-auto font-normal leading-relaxed mb-10">
+                We build high-converting 1-page sites paired with ultra-fast <strong class="text-white">Gemini AI WhatsApp Receptionists</strong> and Google Sheet CRMs. Delivered fully configured in 24 hours.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
+                <button onclick="openChatModal('Test AI Live')" class="w-full sm:w-auto bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold px-8 py-4 rounded-xl text-sm sm:text-base tracking-wide transition-transform duration-200 hover:scale-105 active:scale-95 flex items-center justify-center space-x-2 shadow-xl">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Test AI Live</span>
+                </button>
+
+                <a href="#use-cases" class="w-full sm:w-auto glass-card text-white hover:text-mutedGray-200 font-semibold px-8 py-4 rounded-xl text-sm sm:text-base tracking-wide transition-transform duration-200 flex items-center justify-center space-x-2 border border-mutedGray-300/30 hover:border-white/60">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>See Demos</span>
+                </a>
+            </div>
+
+            <!-- Interactive Demo Box (Simulated WhatsApp Terminal) -->
+            <div class="max-w-xl mx-auto glass-card rounded-2xl overflow-hidden text-left border border-mutedGray-300/30 shadow-2xl relative">
+                <!-- Terminal Header Bar -->
+                <div class="bg-crimson-950/90 px-3 sm:px-4 py-3 border-b border-mutedGray-300/20 flex items-center justify-between min-w-0">
+                    <div class="flex items-center space-x-2 min-w-0 overflow-hidden">
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                        </div>
+                        <span class="text-[11px] sm:text-xs font-mono text-mutedGray-300 ml-1 truncate">WhatsApp API — Gemini Proxy</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5 text-xs text-emerald-400 font-medium shrink-0 ml-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-[10px] sm:text-xs">LIVE DEMO</span>
+                    </div>
+                </div>
+
+                <!-- Chat Feed Display -->
+                <div id="hero-terminal-body" class="p-4 sm:p-6 space-y-4 font-sans text-sm min-h-[220px] bg-crimson-950/40">
+                    <!-- User Message Bubble -->
+                    <div class="flex items-start space-x-3 justify-end">
+                        <div class="bg-white/15 border border-white/25 rounded-2xl rounded-tr-none px-4 py-2.5 text-white max-w-[80%]">
+                            <p class="text-xs font-semibold text-mutedGray-200 mb-0.5">Potential Customer</p>
+                            <p id="hero-user-msg">Are you open on Sundays?</p>
+                        </div>
+                    </div>
+
+                    <!-- Bot Reply Bubble with Official Emblem Avatar -->
+                    <div class="flex items-start space-x-3">
+                        <img src="assets/vlabs-logo.jpg" alt="V Labs Bot" class="w-8 h-8 rounded-full border border-white/30 object-cover shrink-0 shadow">
+                        <div class="bg-crimson-800/80 border border-mutedGray-300/30 rounded-2xl rounded-tl-none px-4 py-2.5 text-white max-w-[85%] relative">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-white">V Labs Gemini AI Agent</span>
+                                <span class="text-[10px] text-mutedGray-300">Instant response</span>
+                            </div>
+                            <p id="hero-bot-msg" class="leading-relaxed min-h-[1.5rem] text-mutedGray-100">
+                                <!-- Typewriter content populated via JS -->
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Terminal Status -->
+                <div class="px-4 py-2 bg-crimson-950/70 border-t border-mutedGray-300/10 text-[11px] text-mutedGray-300 flex items-center justify-between font-mono">
+                    <span>⚡ Status: 24/7 Automated Lead Reception</span>
+                    <span>Sheets CRM Sync: <span class="text-emerald-400">Active</span></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. The Problem vs. Solution (Slick Comparison Grid) -->
+        <section id="comparison" class="py-20 relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-heading text-2xl sm:text-4xl font-bold text-white mb-4">
+                    Stop Losing Customers To Slow Replies
+                </h2>
+                <p class="text-mutedGray-300 max-w-2xl mx-auto text-sm sm:text-base">
+                    Compare the conventional agency approach with the ultra-efficient V Labs turnkey automation model.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                <!-- Card 1: The Old Way -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border-red-900/40 bg-crimson-950/60 relative overflow-hidden">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-red-950 border border-red-800/60 flex items-center justify-center text-red-400 text-lg">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-heading text-xl font-bold text-red-300">The Old Way</h3>
+                            <p class="text-xs text-red-200/60">Traditional agencies & slow manual ops</p>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-4 text-sm text-mutedGray-300">
+                        <li class="flex items-start space-x-3">
+                            <span class="text-red-400 text-base shrink-0 mt-0.5">❌</span>
+                            <span><strong>Unanswered calls & DMs after 8 PM:</strong> Potential clients leave for competitors when you don't answer immediately.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <span class="text-red-400 text-base shrink-0 mt-0.5">❌</span>
+                            <span><strong>Slow manual follow-ups:</strong> Staff takes hours to respond on WhatsApp, losing peak intent leads.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <span class="text-red-400 text-base shrink-0 mt-0.5">❌</span>
+                            <span><strong>Heavy monthly agency retainers:</strong> Paying ₹20,000–₹50,000 every single month just to maintain basic ads or sites.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <span class="text-red-400 text-base shrink-0 mt-0.5">❌</span>
+                            <span><strong>Scattered lead records:</strong> Customer inquiries buried in personal phones, lost chat histories, and forgotten sticky notes.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: The V Labs Way (Pure White Border Accent) -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border-white/60 bg-gradient-to-b from-crimson-800/90 to-crimson-900/90 relative overflow-hidden">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 border border-white/60 flex items-center justify-center text-white text-lg">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div>
+                            <span class="bg-white text-crimson-950 font-extrabold text-[10px] uppercase px-2 py-0.5 rounded-full tracking-wider">Recommended</span>
+                            <h3 class="font-heading text-xl font-bold text-white">The V Labs Way</h3>
+                            <p class="text-xs text-mutedGray-200">Turnkey 24-hour automation engine</p>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-4 text-sm text-white">
+                        <li class="flex items-start space-x-3">
+                            <span class="text-emerald-400 text-base shrink-0 mt-0.5">✅</span>
+                            <span><strong class="text-white">Instant WhatsApp Bot replies 24/7:</strong> Gemini AI greets, answers questions, and qualifies prospects instantly.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <span class="text-emerald-400 text-base shrink-0 mt-0.5">✅</span>
+                            <span><strong class="text-white">Automated Google Sheets CRM:</strong> Every lead's name, phone, and inquiry auto-saved directly into your private Google Sheet.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <span class="text-emerald-400 text-base shrink-0 mt-0.5">✅</span>
+                            <span><strong class="text-white">Pay once, own forever:</strong> Flat setup fee. Zero recurring monthly retainers. 100% code & account ownership handed to you.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <span class="text-emerald-400 text-base shrink-0 mt-0.5">✅</span>
+                            <span><strong class="text-white">24-Hour Prototype Guarantee:</strong> Your high-converting site and WhatsApp AI receptionist live within 24 hours.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Live Industry Use-Cases (Interactive Tabs) -->
+        <section id="use-cases" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-mutedGray-200 font-bold text-xs tracking-widest uppercase">Tailored Automations</span>
+                <h2 class="font-heading text-2xl sm:text-4xl font-bold text-white mt-2">
+                    Live Industry Use-Cases
+                </h2>
+                <p class="text-mutedGray-300 max-w-2xl mx-auto text-sm sm:text-base mt-2">
+                    See how V Labs AI handles automated customer journeys across Vizag's key commercial sectors.
+                </p>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="flex items-center sm:justify-center gap-2 sm:gap-4 mb-10 overflow-x-auto pb-2 custom-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+                <button onclick="switchTab('healthcare')" id="tab-healthcare" class="tab-btn active shrink-0 border border-white bg-white text-crimson-950 font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm transition-all duration-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>Healthcare</span>
+                </button>
+                <button onclick="switchTab('gyms')" id="tab-gyms" class="tab-btn shrink-0 border border-mutedGray-300/30 bg-crimson-900/60 text-mutedGray-200 font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm hover:border-white/60 transition-all duration-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-dumbbell"></i>
+                    <span>High-Ticket Gyms</span>
+                </button>
+                <button onclick="switchTab('retail')" id="tab-retail" class="tab-btn shrink-0 border border-mutedGray-300/30 bg-crimson-900/60 text-mutedGray-200 font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm hover:border-white/60 transition-all duration-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    <span>Retail & Phone Shops</span>
+                </button>
+                <button onclick="switchTab('caterers')" id="tab-caterers" class="tab-btn shrink-0 border border-mutedGray-300/30 bg-crimson-900/60 text-mutedGray-200 font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm hover:border-white/60 transition-all duration-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-utensils"></i>
+                    <span>Caterers</span>
+                </button>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="glass-card rounded-3xl p-6 sm:p-10 border border-white/30">
+                <div id="use-case-content" class="transition-opacity duration-300">
+                    <!-- Dynamic Content populated via app.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Pricing Transparency -->
+        <section id="pricing" class="py-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-card rounded-3xl p-5 sm:p-8 md:p-12 border-2 border-white/60 bg-gradient-to-b from-crimson-800/90 via-crimson-900/95 to-crimson-950 text-center relative overflow-hidden shadow-2xl">
+                <!-- Highlight Ribbon -->
+                <div class="inline-block bg-white text-crimson-950 font-extrabold text-xs tracking-widest uppercase px-6 py-2 rounded-full mb-6">
+                    The Turnkey V Labs Setup — Flat One-Time Fee
+                </div>
+
+                <h2 class="font-heading text-3xl sm:text-5xl font-extrabold text-white mb-4">
+                    Complete Ownership. Zero Retainers.
+                </h2>
+                
+                <p class="text-mutedGray-200 text-sm sm:text-base max-w-2xl mx-auto mb-8">
+                    Get your high-converting business portal, Gemini WhatsApp AI, and Sheets CRM delivered fully configured in under 24 hours.
+                </p>
+
+                <!-- Inclusions Checklist Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-3xl mx-auto mb-10 bg-crimson-950/60 p-6 rounded-2xl border border-mutedGray-300/20">
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-circle-check text-white text-lg mt-0.5"></i>
+                        <span class="text-sm text-white"><strong>Custom 1-Page Site:</strong> Tailwind CSS, Cinzel typography & mobile optimized layout.</span>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-circle-check text-white text-lg mt-0.5"></i>
+                        <span class="text-sm text-white"><strong>WhatsApp Cloud API Bot:</strong> Gemini 1.5 AI trained on your specific business FAQ.</span>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-circle-check text-white text-lg mt-0.5"></i>
+                        <span class="text-sm text-white"><strong>Google Sheets CRM Sync:</strong> Instant lead logging via Apps Script Webhooks.</span>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-circle-check text-white text-lg mt-0.5"></i>
+                        <span class="text-sm text-white"><strong>Handover SOP & Code Ownership:</strong> 100% source code & accounts ownership handed over.</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="openChatModal('Claim 24h Turnkey Setup')" class="w-full sm:w-auto bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold px-10 py-4 rounded-xl text-base tracking-wide transition-transform duration-200 hover:scale-105 active:scale-95 flex items-center justify-center space-x-2 shadow-xl">
+                        <i class="fa-solid fa-rocket"></i>
+                        <span>Claim Your 24h Prototype</span>
+                    </button>
+                </div>
+
+                <p class="text-xs text-mutedGray-300 mt-6 font-mono">
+                    * No monthly retainers. You own 100% of the code and setup forever.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-mutedGray-300/15 py-10 bg-crimson-950/90 relative z-10 text-xs text-mutedGray-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <img src="assets/vlabs-logo.jpg" alt="V Labs Logo" loading="lazy" decoding="async" class="h-8 w-auto object-contain rounded">
+                <span class="font-heading text-lg font-bold text-white tracking-wider">V LABS</span>
+                <span>|</span>
+                <span>Vizag's Premier 24-Hour Digital Studio</span>
+            </div>
+            <div class="flex space-x-6 text-mutedGray-200">
+                <a href="#hero" class="hover:text-white transition-colors">Back to top</a>
+                <a href="#use-cases" class="hover:text-white transition-colors">Demos</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+            </div>
+            <div>
+                © 2026 V Labs Automation. Built for fast-growing Vizag enterprises.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 6. Floating AI Trigger Button (Robot Icon, clean white style) -->
+    <div class="fixed bottom-6 right-6 z-50 safe-bottom-btn">
+        <button id="floating-ai-btn" onclick="toggleChatModal()" class="aura-btn w-16 h-16 rounded-full bg-white text-crimson-950 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform duration-200 border-2 border-white group" aria-label="Talk to V Labs AI">
+            <i class="fa-solid fa-robot text-2xl group-hover:rotate-12 transition-transform duration-300 text-crimson-950"></i>
+        </button>
+    </div>
+
+    <!-- Floating AI Chat Modal (Slide-up Glass Modal) -->
+    <div id="chat-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-crimson-950/70 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div id="chat-modal-card" class="glass-modal w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl h-[85vh] h-[85dvh] sm:h-[600px] flex flex-col transform translate-y-full transition-transform duration-300 overflow-hidden">
+            
+            <!-- Chat Header with Direct WhatsApp Escape Hatch -->
+            <div class="bg-crimson-950/90 p-4 border-b border-mutedGray-300/20 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-white text-crimson-950 font-black text-sm shrink-0 flex items-center justify-center shadow">
+                        <i class="fa-solid fa-robot text-lg text-crimson-950"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-heading font-bold text-sm text-white flex items-center space-x-2">
+                            <span>V Labs AI Assistant</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        </h4>
+                        <p class="text-[11px] text-mutedGray-300">Secure Apps Script Gateway</p>
+                    </div>
+                </div>
+
+                <!-- Header Actions & Updated WhatsApp Escape Hatch Link -->
+                <div class="flex items-center space-x-2">
+                    <!-- Manual WhatsApp Escape Hatch Button -->
+                    <a href="https://wa.me/996655273" target="_blank" rel="noopener noreferrer" class="border border-emerald-500/50 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500 hover:text-crimson-950 font-semibold px-2.5 py-1.5 rounded-lg text-xs flex items-center space-x-1 transition-all" title="Bypass AI and speak to human on WhatsApp">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                        <span class="hidden sm:inline">Chat on WhatsApp</span>
+                    </a>
+                    
+                    <button onclick="toggleChatModal()" class="w-8 h-8 rounded-full bg-crimson-800/60 hover:bg-crimson-700 text-white flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Message Feed -->
+            <div id="chat-feed" class="flex-1 p-4 overflow-y-auto space-y-4 custom-scrollbar text-sm">
+                <!-- Welcome Message from AI -->
+                <div class="flex items-start space-x-2.5">
+                    <div class="w-7 h-7 rounded-full bg-white text-crimson-950 font-extrabold text-xs flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-robot text-xs text-crimson-950"></i>
+                    </div>
+                    <div class="bg-crimson-800/70 border border-mutedGray-300/25 rounded-2xl rounded-tl-none p-3.5 text-white max-w-[85%]">
+                        👋 Welcome to V Labs! I can help schedule your 24-hour prototype demo. What is your business name and WhatsApp number?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions Chips -->
+            <div class="px-3 py-2 bg-crimson-950/40 border-t border-mutedGray-300/10 flex space-x-2 overflow-x-auto text-[11px] custom-scrollbar">
+                <button onclick="sendQuickPrompt('Schedule a 24-hour prototype demo')" class="shrink-0 bg-crimson-800/80 border border-white/30 text-white px-3 py-1 rounded-full hover:bg-white hover:text-crimson-950 transition-colors">
+                    ⚡ Schedule 24h Demo
+                </button>
+                <button onclick="sendQuickPrompt('What is included in the flat setup fee?')" class="shrink-0 bg-crimson-800/80 border border-white/30 text-white px-3 py-1 rounded-full hover:bg-white hover:text-crimson-950 transition-colors">
+                    💰 Pricing Info
+                </button>
+            </div>
+
+            <!-- Chat Input Bar -->
+            <div class="p-3 bg-crimson-950/90 border-t border-mutedGray-300/20 safe-pb">
+                <form id="chat-form" onsubmit="handleChatSubmit(event)" class="flex items-center space-x-2">
+                    <input type="text" id="chat-input" placeholder="Type your inquiry or phone #..." class="flex-1 bg-crimson-900/80 border border-mutedGray-300/30 rounded-xl px-4 py-2.5 text-base md:text-sm text-white placeholder-mutedGray-300/60 focus:outline-none focus:border-white transition-colors" autocomplete="off">
+                    <button type="submit" id="chat-send-btn" class="w-10 h-10 rounded-xl bg-white text-crimson-950 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shadow-md shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

@@ -107,16 +107,26 @@ function switchTab(tabKey) {
     const data = useCasesData[tabKey];
     if (!container || !data) return;
 
-    const actionBtnHtml = data.demoUrl ? `
-        <a href="${data.demoUrl}" target="_blank" rel="noopener noreferrer" class="w-full bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg no-underline">
+    const demoBtnHtml = data.demoUrl ? `
+        <a href="${data.demoUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-crimson-950 font-bold py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg no-underline">
+            <i class="fa-solid fa-play"></i>
+            <span>Demo</span>
+        </a>
+    ` : '';
+
+    const deployBtnHtml = `
+        <a href="https://wa.me/9966555273" target="_blank" rel="noopener noreferrer" class="flex-1 bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg no-underline">
+            <i class="fa-brands fa-whatsapp text-emerald-600 text-base"></i>
             <span>Deploy For Your Business</span>
             <i class="fa-solid fa-arrow-right"></i>
         </a>
-    ` : `
-        <button onclick="openChatModal('Get custom setup for ${data.title}')" class="w-full bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg">
-            <span>Deploy For Your Business</span>
-            <i class="fa-solid fa-arrow-right"></i>
-        </button>
+    `;
+
+    const actionBtnHtml = `
+        <div class="flex flex-col sm:flex-row gap-3 w-full">
+            ${demoBtnHtml}
+            ${deployBtnHtml}
+        </div>
     `;
 
     container.innerHTML = `

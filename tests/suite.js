@@ -59,7 +59,8 @@ assert(appJsContent.includes('useCasesData'), 'Contains 4-industry use-cases tab
 assert(appJsContent.includes('initHeroTerminalTypewriter'), 'Contains typewriter simulation engine');
 assert(appJsContent.includes('toggleMobileMenu'), 'Contains toggleMobileMenu function for responsive mobile navigation');
 assert(appJsContent.includes('escapeHtml'), 'Contains HTML escaping helper to prevent XSS');
-assert(appJsContent.includes('https://v-labs-phone-repair-shop-demo.hello-vlabs-tech.workers.dev/'), 'Retail & Phone Shops industry demo button links to Cloudflare Workers live demo');
+assert(appJsContent.includes('https://v-labs-phone-repair-shop-demo.hello-vlabs-tech.workers.dev/'), 'Retail & Phone Shops industry Demo button links to Cloudflare Workers live demo');
+assert(appJsContent.includes('https://wa.me/9966555273'), 'Deploy For Your Business button links to WhatsApp wa.me/9966555273');
 console.log('');
 
 // --------------------------------------------------

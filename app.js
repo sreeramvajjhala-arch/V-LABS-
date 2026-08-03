@@ -70,6 +70,7 @@ const useCasesData = {
         title: "Retail & Electronics Phone Shops",
         badge: "Stock Inquiries & Trade-in Price Quotes",
         icon: "fa-mobile-screen-button",
+        demoUrl: "https://v-labs-phone-repair-shop-demo.hello-vlabs-tech.workers.dev/",
         flow: [
             { step: "1. Customer Inquiry", desc: "Customer texts: 'Do you have iPhone 15 Pro Max 256GB Natural Titanium in stock?'" },
             { step: "2. Gemini AI Reply (3s)", desc: "AI replies: 'Yes, 2 units left at ₹1,29,900! Want me to reserve one for pick-up at our Jagadamba branch?'" },
@@ -106,6 +107,18 @@ function switchTab(tabKey) {
     const data = useCasesData[tabKey];
     if (!container || !data) return;
 
+    const actionBtnHtml = data.demoUrl ? `
+        <a href="${data.demoUrl}" target="_blank" rel="noopener noreferrer" class="w-full bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg no-underline">
+            <span>Deploy For Your Business</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    ` : `
+        <button onclick="openChatModal('Get custom setup for ${data.title}')" class="w-full bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg">
+            <span>Deploy For Your Business</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    `;
+
     container.innerHTML = `
         <div class="flex flex-col lg:flex-row items-start justify-between gap-8">
             <div class="lg:w-1/2 space-y-4">
@@ -139,10 +152,7 @@ function switchTab(tabKey) {
                     <p class="text-lg font-bold text-white leading-snug">${data.impact}</p>
                 </div>
 
-                <button onclick="openChatModal('Get custom setup for ${data.title}')" class="w-full bg-white hover:bg-mutedGray-200 text-crimson-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg">
-                    <span>Deploy For Your Business</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
+                ${actionBtnHtml}
             </div>
         </div>
     `;

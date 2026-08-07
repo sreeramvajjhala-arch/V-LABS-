@@ -1,22 +1,69 @@
 /**
  * V LABS — Application JavaScript Engine
- * UI Updates: Uses clean Robot Icon avatar for AI chat messages.
+ * UI Updates: Centralized VLabsState engine, LocalStorage persistence,
+ * Quick-Prompt chips handler, clear chat history, and RAF Typewriter.
  */
 
 // ==========================================
-// CONFIGURATION
+// CONFIGURATION & CENTRALIZED STATE ENGINE
 // ==========================================
 const APPS_SCRIPT_WEBHOOK_URL = 'YOUR_APPS_SCRIPT_WEBHOOK_URL';
+const STORAGE_KEY = 'vlabs_chat_history';
 
-// Conversation history state passed to secure backend proxy
-let conversationHistory = [];
+// Centralized Reactive Application State
+const VLabsState = {
+    activeTab: 'healthcare',
+    chatHistory: loadPersistedHistory(),
+    isChatOpen: false,
+    isSubmitting: false,
+    leadCaptured: false,
+
+    setTab(tabKey) {
+        this.activeTab = tabKey;
+        switchTab(tabKey);
+    },
+    addMessage(role, content) {
+        this.chatHistory.push({ role, content });
+        persistHistory(this.chatHistory);
+    },
+    clearHistory() {
+        this.chatHistory = [];
+        persistHistory([]);
+    }
+};
+
+// Global conversation history pointer for backward compatibility with tests and proxy
+let conversationHistory = VLabsState.chatHistory;
+
+function loadPersistedHistory() {
+    try {
+        if (typeof localStorage !== 'undefined') {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        }
+    } catch (e) {
+        console.warn('LocalStorage unavailable:', e);
+    }
+    return [];
+}
+
+function persistHistory(historyList) {
+    try {
+        if (typeof localStorage !== 'undefined') {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(historyList));
+        }
+    } catch (e) {
+        console.warn('Failed to persist history:', e);
+    }
+}
 
 // ==========================================
-// 1. HERO TERMINAL TYPEWRITER ANIMATION
+// 1. HERO TERMINAL TYPEWRITER ANIMATION (RAF Optimized)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     initHeroTerminalTypewriter();
-    switchTab('healthcare'); // Initialize default tab
+    switchTab(VLabsState.activeTab); // Initialize active tab state
+    renderPersistedChatFeed();
 });
 
 function initHeroTerminalTypewriter() {
@@ -28,16 +75,28 @@ function initHeroTerminalTypewriter() {
     
     const textSpan = document.getElementById('typewriter-text');
     let index = 0;
+    let lastTime = 0;
+    const interval = 40;
 
-    function typeChar() {
-        if (index < fullResponse.length) {
-            textSpan.textContent += fullResponse.charAt(index);
-            index++;
-            setTimeout(typeChar, 35 + Math.random() * 25);
+    function typeStep(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const progress = timestamp - lastTime;
+
+        if (progress >= interval) {
+            if (index < fullResponse.length) {
+                textSpan.textContent += fullResponse.charAt(index);
+                index++;
+                lastTime = timestamp;
+            } else {
+                return; // Finished
+            }
         }
+        requestAnimationFrame(typeStep);
     }
 
-    setTimeout(typeChar, 600);
+    setTimeout(() => {
+        requestAnimationFrame(typeStep);
+    }, 600);
 }
 
 // ==========================================
@@ -95,12 +154,14 @@ function switchTab(tabKey) {
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active', 'border-white', 'bg-white', 'text-crimson-950', 'font-bold');
         btn.classList.add('border-mutedGray-300/30', 'bg-crimson-900/60', 'text-mutedGray-200', 'font-medium');
+        btn.setAttribute('aria-selected', 'false');
     });
 
     const activeBtn = document.getElementById(`tab-${tabKey}`);
     if (activeBtn) {
         activeBtn.classList.remove('border-mutedGray-300/30', 'bg-crimson-900/60', 'text-mutedGray-200', 'font-medium');
         activeBtn.classList.add('active', 'border-white', 'bg-white', 'text-crimson-950', 'font-bold');
+        activeBtn.setAttribute('aria-selected', 'true');
     }
 
     const container = document.getElementById('use-case-content');
@@ -130,7 +191,7 @@ function switchTab(tabKey) {
     `;
 
     container.innerHTML = `
-        <div class="flex flex-col lg:flex-row items-start justify-between gap-8">
+        <div class="flex flex-col lg:flex-row items-start justify-between gap-8 animate-fadeIn">
             <div class="lg:w-1/2 space-y-4">
                 <div class="inline-flex items-center space-x-2 bg-white/10 border border-white/30 text-white px-3 py-1 rounded-full text-xs font-semibold">
                     <i class="fa-solid ${data.icon}"></i>
@@ -200,16 +261,19 @@ function toggleMobileMenu() {
 function toggleChatModal() {
     const modal = document.getElementById('chat-modal');
     const modalCard = document.getElementById('chat-modal-card');
+    if (!modal) return;
 
     if (modal.classList.contains('hidden')) {
         modal.classList.remove('hidden');
+        VLabsState.isChatOpen = true;
         setTimeout(() => {
             modal.classList.remove('opacity-0');
-            modalCard.classList.remove('translate-y-full');
+            if (modalCard) modalCard.classList.remove('translate-y-full');
         }, 10);
     } else {
         modal.classList.add('opacity-0');
-        modalCard.classList.add('translate-y-full');
+        if (modalCard) modalCard.classList.add('translate-y-full');
+        VLabsState.isChatOpen = false;
         setTimeout(() => {
             modal.classList.add('hidden');
         }, 300);
@@ -218,7 +282,7 @@ function toggleChatModal() {
 
 function openChatModal(prefillMessage = '') {
     const modal = document.getElementById('chat-modal');
-    if (modal.classList.contains('hidden')) {
+    if (modal && modal.classList.contains('hidden')) {
         toggleChatModal();
     }
     if (prefillMessage) {
@@ -238,21 +302,50 @@ function sendQuickPrompt(promptText) {
     }
 }
 
+function clearChatHistory() {
+    VLabsState.clearHistory();
+    conversationHistory = VLabsState.chatHistory;
+    const feed = document.getElementById('chat-feed');
+    if (feed) {
+        feed.innerHTML = `
+            <div class="text-center py-4 text-xs text-mutedGray-300/70 border-b border-white/10 mb-2">
+                <i class="fa-solid fa-sparkles text-amber-400 mr-1"></i>
+                <span>Conversation reset. Ask V Labs AI anything!</span>
+            </div>
+        `;
+    }
+}
+
+function renderPersistedChatFeed() {
+    const feed = document.getElementById('chat-feed');
+    if (!feed || VLabsState.chatHistory.length === 0) return;
+
+    VLabsState.chatHistory.forEach(item => {
+        const sender = item.role === 'user' ? 'user' : 'bot';
+        appendChatMessage(sender, item.content, false);
+    });
+}
+
 // ==========================================
 // 4. SECURE BACKEND GATEWAY CHAT SUBMISSION
 // ==========================================
 async function handleChatSubmit(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     const inputEl = document.getElementById('chat-input');
+    if (!inputEl) return;
+
     const userMessage = inputEl.value.trim();
-    if (!userMessage) return;
+    if (!userMessage || VLabsState.isSubmitting) return;
+
+    VLabsState.isSubmitting = true;
 
     // Display user message in chat UI
     appendChatMessage('user', userMessage);
     inputEl.value = '';
 
-    // Append to local conversation history
-    conversationHistory.push({ role: 'user', content: userMessage });
+    // Append to local state and storage
+    VLabsState.addMessage('user', userMessage);
+    conversationHistory = VLabsState.chatHistory;
 
     // Show loading spinner
     const loadingId = appendLoadingIndicator();
@@ -262,14 +355,14 @@ async function handleChatSubmit(e) {
 
         if (APPS_SCRIPT_WEBHOOK_URL === 'YOUR_APPS_SCRIPT_WEBHOOK_URL' || !APPS_SCRIPT_WEBHOOK_URL) {
             // Local fallback simulation when Webhook URL is unconfigured
-            await new Promise(r => setTimeout(r, 850));
+            await new Promise(r => setTimeout(r, 650));
             aiReplyText = getFallbackAiResponse(userMessage);
         } else {
             // SECURE FETCH TO GOOGLE APPS SCRIPT WEBHOOK PROXY
             const payload = {
                 action: 'chat',
                 message: userMessage,
-                history: conversationHistory
+                history: VLabsState.chatHistory
             };
 
             const response = await fetch(APPS_SCRIPT_WEBHOOK_URL, {
@@ -289,8 +382,8 @@ async function handleChatSubmit(e) {
             aiReplyText = resData.reply || getFallbackAiResponse(userMessage);
         }
 
-        // Save AI reply to history
-        conversationHistory.push({ role: 'model', content: aiReplyText });
+        // Save AI reply to history state
+        VLabsState.addMessage('model', aiReplyText);
 
         removeChatMessage(loadingId);
         appendChatMessage('bot', aiReplyText);
@@ -299,7 +392,10 @@ async function handleChatSubmit(e) {
         console.warn('Backend proxy fetch failed, relying on client safety fallback:', error);
         removeChatMessage(loadingId);
         const fallbackText = getFallbackAiResponse(userMessage);
+        VLabsState.addMessage('model', fallbackText);
         appendChatMessage('bot', fallbackText);
+    } finally {
+        VLabsState.isSubmitting = false;
     }
 }
 
@@ -319,7 +415,7 @@ function getFallbackAiResponse(msg) {
 }
 
 // UI Helpers for Chat Messages with Robot Icon Avatar
-function appendChatMessage(sender, text) {
+function appendChatMessage(sender, text, shouldScroll = true) {
     const feed = document.getElementById('chat-feed');
     if (!feed) return;
 
@@ -344,7 +440,9 @@ function appendChatMessage(sender, text) {
     }
 
     feed.appendChild(msgDiv);
-    feed.scrollTop = feed.scrollHeight;
+    if (shouldScroll) {
+        feed.scrollTop = feed.scrollHeight;
+    }
 }
 
 function appendLoadingIndicator() {
@@ -384,3 +482,4 @@ function escapeHtml(str) {
               .replace(/"/g, "&quot;")
               .replace(/'/g, "&#039;");
 }
+

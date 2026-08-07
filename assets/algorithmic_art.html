@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V Labs — Quantum Crimson Vectors (Generative Algorithmic Art)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #1A0202;
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    /* Layout */
+    #sidebar {
+      width: 340px;
+      background: rgba(45, 5, 5, 0.92);
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    #canvas-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #100101;
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 1px;
+    }
+
+    h2 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #E63946;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .section-box {
+      background: rgba(26, 2, 2, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    /* Seed Controls */
+    .seed-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #FFFFFF;
+      color: #1A0202;
+    }
+
+    .btn-primary {
+      background: #E63946;
+      border-color: #E63946;
+      color: #FFFFFF;
+      width: 100%;
+      padding: 10px;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: #FF4D5E;
+      color: #FFFFFF;
+    }
+
+    .btn-emerald {
+      background: #10B981;
+      border-color: #10B981;
+      color: #000000;
+      width: 100%;
+      padding: 10px;
+      font-weight: 700;
+    }
+
+    .btn-emerald:hover {
+      background: #34D399;
+    }
+
+    input[type="number"], input[type="range"] {
+      width: 100%;
+      accent-color: #E63946;
+    }
+
+    input[type="number"] {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .control-group {
+      margin-bottom: 12px;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #E2E8F0;
+      margin-bottom: 4px;
+    }
+
+    .val-display {
+      color: #10B981;
+      font-family: monospace;
+      font-weight: 700;
+    }
+
+    /* Watermark badge */
+    .badge {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <div>
+      <h1>V LABS ART</h1>
+      <p style="font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 4px;">Generative Quantum Crimson Engine</p>
+    </div>
+
+    <!-- Seed Control Section -->
+    <div class="section-box">
+      <h2>1. Seed Navigator</h2>
+      <div style="font-size: 13px; font-weight: 700; color: #FFF; margin-bottom: 6px;">
+        Seed: <span id="current-seed-val" style="color: #10B981;">12345</span>
+      </div>
+      <div class="seed-row">
+        <button class="btn" onclick="adjustSeed(-1)">◀ Prev</button>
+        <button class="btn" onclick="adjustSeed(1)">Next ▶</button>
+        <button class="btn" onclick="randomizeSeed()">🎲 Random</button>
+      </div>
+      <div class="seed-row" style="margin-top: 8px;">
+        <input type="number" id="jump-seed-input" value="12345" placeholder="Jump to seed">
+        <button class="btn" onclick="jumpToSeed()">Jump</button>
+      </div>
+    </div>
+
+    <!-- Parameters Section -->
+    <div class="section-box">
+      <h2>2. Vector Parameters</h2>
+
+      <div class="control-group">
+        <div class="control-label"><span>Particle Count</span><span id="v-particles" class="val-display">1200</span></div>
+        <input type="range" id="p-particles" min="300" max="3000" step="100" value="1200" oninput="updateParam('particleCount', this.value)">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label"><span>Vector Field Noise Scale</span><span id="v-noiseScale" class="val-display">0.003</span></div>
+        <input type="range" id="p-noiseScale" min="0.001" max="0.015" step="0.001" value="0.003" oninput="updateParam('noiseScale', this.value)">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label"><span>Particle Velocity</span><span id="v-speed" class="val-display">2.5</span></div>
+        <input type="range" id="p-speed" min="0.5" max="6.0" step="0.5" value="2.5" oninput="updateParam('speed', this.value)">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label"><span>Trail Persistence (Alpha)</span><span id="v-trailAlpha" class="val-display">18</span></div>
+        <input type="range" id="p-trailAlpha" min="2" max="60" step="2" value="18" oninput="updateParam('trailAlpha', this.value)">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label"><span>Central Attractor Force</span><span id="v-attractor" class="val-display">0.4</span></div>
+        <input type="range" id="p-attractor" min="0.0" max="1.5" step="0.1" value="0.4" oninput="updateParam('attractorForce', this.value)">
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <button class="btn btn-primary" onclick="resetCanvasState()">⚡ Regenerate Vector Field</button>
+      <button class="btn btn-emerald" onclick="downloadArtwork()">💾 Download High-Res PNG</button>
+    </div>
+
+    <div class="badge">V LABS • CRIMSON CYBERNETICS GENERATIVE SYSTEM</div>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <script>
+    // System Parameters
+    let params = {
+      seed: 12345,
+      particleCount: 1200,
+      noiseScale: 0.003,
+      speed: 2.5,
+      trailAlpha: 18,
+      attractorForce: 0.4
+    };
+
+    let particles = [];
+
+    function setup() {
+      let size = Math.min(windowWidth - 340, windowHeight);
+      let canvas = createCanvas(size, size);
+      canvas.parent('canvas-container');
+      initSystem();
+    }
+
+    function windowResized() {
+      let size = Math.min(windowWidth - 340, windowHeight);
+      resizeCanvas(size, size);
+      initSystem();
+    }
+
+    function initSystem() {
+      randomSeed(params.seed);
+      noiseSeed(params.seed);
+      background(26, 2, 2);
+
+      particles = [];
+      for (let i = 0; i < params.particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function draw() {
+      // Semi-transparent background overlay to create smooth particle trails
+      background(26, 2, 2, params.trailAlpha);
+
+      let center = createVector(width / 2, height / 2);
+
+      for (let p of particles) {
+        p.update(center);
+        p.show();
+      }
+    }
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.pos = createVector(random(width), random(height));
+        this.vel = createVector(0, 0);
+        this.acc = createVector(0, 0);
+        this.maxSpeed = params.speed * random(0.8, 1.4);
+        this.life = random(100, 400);
+        this.age = 0;
+        
+        // Color distribution: Crimson, Emerald, and Platinum
+        let r = random(1);
+        if (r < 0.6) {
+          this.color = color(230, 57, 70, random(160, 240)); // Vivid Crimson
+        } else if (r < 0.85) {
+          this.color = color(16, 185, 129, random(180, 255)); // Emerald Accent
+        } else {
+          this.color = color(255, 255, 255, random(200, 255)); // Platinum White
+        }
+      }
+
+      update(center) {
+        // 1. Calculate Perlin Noise Flow Field Angle
+        let angle = noise(this.pos.x * params.noiseScale, this.pos.y * params.noiseScale, frameCount * 0.002) * TWO_PI * 4;
+        let flowForce = p5.Vector.fromAngle(angle).mult(0.5);
+        this.acc.add(flowForce);
+
+        // 2. Central Attractor Force
+        if (params.attractorForce > 0) {
+          let dir = p5.Vector.sub(center, this.pos);
+          let dist = dir.mag();
+          dir.normalize();
+          dir.mult((params.attractorForce * 50) / (dist + 50));
+          this.acc.add(dir);
+        }
+
+        this.vel.add(this.acc);
+        this.vel.limit(this.maxSpeed);
+        this.pos.add(this.vel);
+        this.acc.mult(0);
+
+        this.age++;
+        if (this.age > this.life || this.pos.x < 0 || this.pos.x > width || this.pos.y < 0 || this.pos.y > height) {
+          this.reset();
+        }
+      }
+
+      show() {
+        stroke(this.color);
+        strokeWeight(1.5);
+        point(this.pos.x, this.pos.y);
+      }
+    }
+
+    // Interactive UI Handlers
+    function updateParam(key, val) {
+      params[key] = parseFloat(val);
+      let dispEl = document.getElementById('v-' + key);
+      if (dispEl) dispEl.innerText = val;
+      if (key === 'particleCount') initSystem();
+    }
+
+    function adjustSeed(delta) {
+      params.seed += delta;
+      syncSeed();
+    }
+
+    function randomizeSeed() {
+      params.seed = Math.floor(Math.random() * 900000) + 10000;
+      syncSeed();
+    }
+
+    function jumpToSeed() {
+      let inputVal = parseInt(document.getElementById('jump-seed-input').value);
+      if (!isNaN(inputVal)) {
+        params.seed = inputVal;
+        syncSeed();
+      }
+    }
+
+    function syncSeed() {
+      document.getElementById('current-seed-val').innerText = params.seed;
+      document.getElementById('jump-seed-input').value = params.seed;
+      initSystem();
+    }
+
+    function resetCanvasState() {
+      initSystem();
+    }
+
+    function downloadArtwork() {
+      saveCanvas(`vlabs_generative_seed_${params.seed}`, 'png');
+    }
+  </script>
+</body>
+</html>

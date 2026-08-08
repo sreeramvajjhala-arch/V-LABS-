@@ -203,15 +203,21 @@ class ParticleEngine {
   resize() {
     if (!this.canvas) return;
 
-    const parent = this.canvas.parentElement || document.body;
+    const win = typeof window !== 'undefined' ? window : null;
+    const parent = this.canvas.parentElement || (win && win.document ? win.document.body : null);
     const rect = this.canvas.getBoundingClientRect();
-    
-    // Display width & height
-    this.width = rect.width || parent.clientWidth || 800;
-    this.height = rect.height || parent.clientHeight || 600;
+
+    // Determine viewport/canvas width and height accurately
+    const w = (win && win.innerWidth) ? win.innerWidth : (rect.width || (parent && parent.clientWidth) || 800);
+    const h = (win && win.innerHeight) ? win.innerHeight : (rect.height || (parent && parent.clientHeight) || 600);
+
+    const prevW = this.width;
+    const prevH = this.height;
+
+    this.width = Math.max(w, 100);
+    this.height = Math.max(h, 100);
 
     // High-DPI scaling
-    const win = typeof window !== 'undefined' ? window : null;
     this.dpr = (win && win.devicePixelRatio) || 1;
 
     this.canvas.width = Math.floor(this.width * this.dpr);
@@ -221,13 +227,24 @@ class ParticleEngine {
       this.ctx.resetTransform ? this.ctx.resetTransform() : this.ctx.setTransform(1, 0, 0, 1, 0, 0);
       this.ctx.scale(this.dpr, this.dpr);
     }
+
+    // Scale existing particle positions proportionally on resize or redistrib if initial resize
+    if (prevW > 0 && prevH > 0 && (prevW !== this.width || prevH !== this.height) && this.particles && this.particles.length > 0) {
+      const scaleX = this.width / prevW;
+      const scaleY = this.height / prevH;
+      this._.forEach(this.particles, (p) => {
+        p.x = Math.max(0, Math.min(this.width, p.x * scaleX));
+        p.y = Math.max(0, Math.min(this.height, p.y * scaleY));
+      });
+    }
   }
 
   _createParticlePool(count) {
     const _ = this._;
     const palette = PALETTES[this.config.palette] || PALETTES.maroon_gold;
-    const w = this.width || 800;
-    const h = this.height || 600;
+    const win = typeof window !== 'undefined' ? window : null;
+    const w = (this.width && this.width > 100) ? this.width : ((win && win.innerWidth) || 800);
+    const h = (this.height && this.height > 100) ? this.height : ((win && win.innerHeight) || 600);
 
     return _.range(count).map(() => {
       const type = _.sample(['bubble', 'line']);

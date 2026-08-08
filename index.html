@@ -228,6 +228,9 @@
 </head>
 <body class="bg-gradient-to-b from-crimson-700 via-crimson-800 to-crimson-900 text-white min-h-screen relative selection:bg-white selection:text-crimson-950">
 
+    <!-- Ambient HTML5 Canvas Particle Background -->
+    <canvas id="particleCanvas" class="fixed inset-0 w-full h-full pointer-events-auto z-0"></canvas>
+
     <!-- Ambient Hero Halo Background Effect -->
     <div class="ambient-halo"></div>
 
@@ -857,6 +860,10 @@
 
         </div>
     </div>
+
+    <!-- Lodash CDN & Particle Engine Script -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="canvas_particle_bg/particle-engine.js"></script>
 
     <!-- Application JavaScript Logic -->
     <script src="app.js"></script>

@@ -51,6 +51,18 @@ document.addEventListener('DOMContentLoaded', () => {
     switchTab(VLabsState.activeTab); // Initialize active tab state
     renderPersistedChatFeed();
 
+    // Initialize ambient HTML5 Canvas Particle Engine background if present
+    const particleCanvas = document.getElementById('particleCanvas');
+    if (particleCanvas && typeof ParticleEngine !== 'undefined') {
+        const bgEngine = new ParticleEngine(particleCanvas, {
+            density: 75,
+            speedMultiplier: 0.9,
+            palette: 'maroon_gold',
+            mousePhysicsEnabled: true
+        });
+        bgEngine.start();
+    }
+
     // Keyboard accessibility: Close chat modal on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && VLabsState.isChatOpen) {

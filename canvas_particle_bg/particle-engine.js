@@ -241,19 +241,18 @@ class ParticleEngine {
 
   _createParticlePool(count) {
     const _ = this._;
-    const palette = PALETTES[this.config.palette] || PALETTES.maroon_gold;
     const win = typeof window !== 'undefined' ? window : null;
     const w = (this.width && this.width > 100) ? this.width : ((win && win.innerWidth) || 800);
     const h = (this.height && this.height > 100) ? this.height : ((win && win.innerHeight) || 600);
 
     return _.range(count).map(() => {
       const type = _.sample(['bubble', 'line']);
-      const color = _.sample(palette.particles);
-      const vx = _.random(-0.6, 0.6, true);
-      const vy = _.random(-0.6, 0.6, true);
+      const vx = _.random(-0.5, 0.5, true);
+      const vy = _.random(-0.5, 0.5, true);
+      const alpha = _.random(0.35, 0.95, true);
 
       if (type === 'bubble') {
-        const rBase = _.random(2, 7, true);
+        const rBase = _.random(1.2, 3.2, true);
         return {
           type: 'bubble',
           x: _.random(0, w, true),
@@ -264,10 +263,11 @@ class ParticleEngine {
           baseVy: vy,
           rBase: rBase,
           currentRadius: rBase,
-          pulseAmp: _.random(0.5, 1.8, true),
+          pulseAmp: _.random(0.3, 0.8, true),
           pulseFreq: _.random(0.02, 0.05, true),
           pulsePhase: _.random(0, Math.PI * 2, true),
-          color: color
+          alpha: alpha,
+          color: "#FFFFFF"
         };
       } else {
         return {
@@ -278,11 +278,12 @@ class ParticleEngine {
           vy: vy,
           baseVx: vx,
           baseVy: vy,
-          length: _.random(10, 24, true),
-          lineWidth: _.random(1, 2, true),
+          length: _.random(5, 12, true),
+          lineWidth: _.random(0.6, 1.2, true),
           angle: _.random(0, Math.PI * 2, true),
           rotSpeed: _.random(-0.035, 0.035, true),
-          color: color
+          alpha: alpha,
+          color: "#FFFFFF"
         };
       }
     });
@@ -540,7 +541,6 @@ class ParticleEngine {
     const ctx = this.ctx;
     const w = this.width || 800;
     const h = this.height || 600;
-    const palette = PALETTES[this.config.palette] || PALETTES.maroon_gold;
 
     // Clear canvas
     ctx.clearRect(0, 0, w, h);
@@ -549,7 +549,7 @@ class ParticleEngine {
     const count = particles.length;
 
     // 1. Draw Connecting Web Lines (Particle to Particle)
-    const p2pThreshold = 120;
+    const p2pThreshold = 110;
     const p2pThresholdSq = p2pThreshold * p2pThreshold;
 
     for (let i = 0; i < count; i++) {
@@ -565,13 +565,13 @@ class ParticleEngine {
         const dSq = dx * dx + dy * dy;
         if (dSq <= p2pThresholdSq) {
           const dist = Math.sqrt(dSq);
-          const alpha = 0.35 * (1 - dist / p2pThreshold);
+          const alpha = 0.25 * (1 - dist / p2pThreshold) * ((p1.alpha || 0.8) + (p2.alpha || 0.8)) * 0.5;
 
           ctx.beginPath();
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(${palette.webLine}, ${alpha.toFixed(3)})`;
-          ctx.lineWidth = 0.8;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
+          ctx.lineWidth = 0.6;
           ctx.stroke();
         }
       }
@@ -579,7 +579,7 @@ class ParticleEngine {
 
     // 2. Draw Connecting Web Lines (Particle to Mouse Pointer)
     if (this.config.mousePhysicsEnabled && this.pointerState.isActive && this.pointerState.x !== null) {
-      const p2mThreshold = 150;
+      const p2mThreshold = 160;
       const p2mThresholdSq = p2mThreshold * p2mThreshold;
       const px = this.pointerState.x;
       const py = this.pointerState.y;
@@ -594,13 +594,13 @@ class ParticleEngine {
         const dSq = dx * dx + dy * dy;
         if (dSq <= p2mThresholdSq) {
           const dist = Math.sqrt(dSq);
-          const alpha = 0.5 * (1 - dist / p2mThreshold);
+          const alpha = 0.45 * (1 - dist / p2mThreshold);
 
           ctx.beginPath();
           ctx.moveTo(px, py);
           ctx.lineTo(p.x, p.y);
-          ctx.strokeStyle = `rgba(${palette.webLine}, ${alpha.toFixed(3)})`;
-          ctx.lineWidth = 1.0;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
+          ctx.lineWidth = 0.9;
           ctx.stroke();
         }
       }
@@ -609,22 +609,24 @@ class ParticleEngine {
     // 3. Render Impulse Waves (Shockwave Visual Rings)
     for (let i = 0; i < this.impulseWaves.length; i++) {
       const wave = this.impulseWaves[i];
-      const alpha = (1 - wave.radius / wave.maxRadius) * 0.6;
+      const alpha = (1 - wave.radius / wave.maxRadius) * 0.5;
       ctx.beginPath();
       ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(${palette.webLine}, ${alpha.toFixed(3)})`;
-      ctx.lineWidth = 2.0;
+      ctx.strokeStyle = `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
+      ctx.lineWidth = 1.5;
       ctx.stroke();
     }
 
     // 4. Render Particles
     for (let i = 0; i < count; i++) {
       const p = particles[i];
+      ctx.globalAlpha = p.alpha || 0.85;
+
       if (p.type === 'bubble') {
         ctx.beginPath();
         const r = Math.max(0.1, p.currentRadius);
         ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
+        ctx.fillStyle = "#FFFFFF";
         ctx.fill();
       } else if (p.type === 'line') {
         const halfLen = p.length / 2;
@@ -638,11 +640,13 @@ class ParticleEngine {
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
-        ctx.strokeStyle = p.color;
+        ctx.strokeStyle = "#FFFFFF";
         ctx.lineWidth = p.lineWidth;
         ctx.stroke();
       }
     }
+
+    ctx.globalAlpha = 1.0;
   }
 }
 

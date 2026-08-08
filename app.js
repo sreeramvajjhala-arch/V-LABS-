@@ -50,6 +50,23 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeroTerminalTypewriter();
     switchTab(VLabsState.activeTab); // Initialize active tab state
     renderPersistedChatFeed();
+
+    // Keyboard accessibility: Close chat modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && VLabsState.isChatOpen) {
+            toggleChatModal();
+        }
+    });
+
+    // Backdrop dismissal: Close chat modal on outer backdrop click
+    const modal = document.getElementById('chat-modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal && VLabsState.isChatOpen) {
+                toggleChatModal();
+            }
+        });
+    }
 });
 
 function initHeroTerminalTypewriter() {

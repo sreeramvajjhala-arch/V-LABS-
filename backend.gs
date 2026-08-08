@@ -127,10 +127,8 @@ function checkFastPathFaq(message) {
   var lowerMsg = message.toLowerCase();
   for (var i = 0; i < FAQ_FAST_PATH.length; i++) {
     var item = FAQ_FAST_PATH[i];
-    for (var k = 0; k < item.keywords.length; k++) {
-      if (lowerMsg.indexOf(item.keywords[k]) !== -1) {
-        return item.reply;
-      }
+    if (item.keywords.some(function(k) { return lowerMsg.indexOf(k) !== -1; })) {
+      return item.reply;
     }
   }
   return null;

@@ -36,25 +36,11 @@ const VLabsState = {
 let conversationHistory = VLabsState.chatHistory;
 
 function loadPersistedHistory() {
-    try {
-        if (typeof localStorage !== 'undefined') {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            return raw ? JSON.parse(raw) : [];
-        }
-    } catch (e) {
-        console.warn('LocalStorage unavailable:', e);
-    }
-    return [];
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
 }
 
-function persistHistory(historyList) {
-    try {
-        if (typeof localStorage !== 'undefined') {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(historyList));
-        }
-    } catch (e) {
-        console.warn('Failed to persist history:', e);
-    }
+function persistHistory(list) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch {}
 }
 
 // ==========================================

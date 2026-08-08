@@ -65,32 +65,32 @@ const _resolveLodash = () => {
 
 const PALETTES = {
   maroon_gold: {
-    name: "Luxury Maroon & Gold",
+    name: "Pure White & Crimson",
     bgGradient: ["#4A0000", "#1A0202"],
-    particles: ["#FFD700", "#FFF8DC", "#FFFFFF", "#E6C280", "#E11D48"],
-    webLine: "245, 158, 11",
-    accent: "#FFD700"
+    particles: ["#FFFFFF"],
+    webLine: "255, 255, 255",
+    accent: "#FFFFFF"
   },
   cyber_crimson: {
-    name: "Cyber Crimson",
+    name: "Pure White Cyber",
     bgGradient: ["#3B0008", "#0F0003"],
-    particles: ["#FF2A6D", "#05D9E8", "#D1D1D1", "#FFFFFF"],
-    webLine: "225, 29, 72",
-    accent: "#FF2A6D"
+    particles: ["#FFFFFF"],
+    webLine: "255, 255, 255",
+    accent: "#FFFFFF"
   },
   emerald_night: {
-    name: "Emerald Night",
+    name: "Pure White Emerald",
     bgGradient: ["#042923", "#01120F"],
-    particles: ["#10B981", "#6EE7B7", "#F3F4F6", "#F59E0B"],
-    webLine: "16, 185, 129",
-    accent: "#10B981"
+    particles: ["#FFFFFF"],
+    webLine: "255, 255, 255",
+    accent: "#FFFFFF"
   },
   sapphire_dark: {
-    name: "Sapphire Dark",
+    name: "Pure White Sapphire",
     bgGradient: ["#0B192C", "#030712"],
-    particles: ["#38BDF8", "#818CF8", "#E2E8F0", "#FFFFFF"],
-    webLine: "59, 130, 246",
-    accent: "#38BDF8"
+    particles: ["#FFFFFF"],
+    webLine: "255, 255, 255",
+    accent: "#FFFFFF"
   }
 };
 
@@ -289,43 +289,46 @@ class ParticleEngine {
   }
 
   _updatePointerPosition(e) {
-    if (!this.canvas || !e) return;
-    const rect = this.canvas.getBoundingClientRect();
-    this.pointerState.x = e.clientX - rect.left;
-    this.pointerState.y = e.clientY - rect.top;
+    if (!e || typeof e.clientX !== 'number') return;
+    if (this.canvas) {
+      const rect = this.canvas.getBoundingClientRect();
+      this.pointerState.x = e.clientX - rect.left;
+      this.pointerState.y = e.clientY - rect.top;
+    } else {
+      this.pointerState.x = e.clientX;
+      this.pointerState.y = e.clientY;
+    }
     this.pointerState.isActive = true;
   }
 
   _bindEvents() {
-    if (typeof window === 'undefined' || !this.canvas) return;
+    if (typeof window === 'undefined') return;
 
     window.addEventListener('resize', this._handleResize);
-    this.canvas.addEventListener('mousemove', this._handlePointerMove);
-    this.canvas.addEventListener('mouseleave', this._handlePointerLeave);
-    this.canvas.addEventListener('mouseenter', this._handlePointerEnter);
-    this.canvas.addEventListener('click', this._handleClick);
+    window.addEventListener('mousemove', this._handlePointerMove);
+    window.addEventListener('mouseleave', this._handlePointerLeave);
+    window.addEventListener('click', this._handleClick);
 
-    this.canvas.addEventListener('touchstart', this._handleTouchStart, { passive: true });
-    this.canvas.addEventListener('touchmove', this._handleTouchMove, { passive: true });
-    this.canvas.addEventListener('touchend', this._handleTouchEnd, { passive: true });
-    this.canvas.addEventListener('touchcancel', this._handleTouchEnd, { passive: true });
+    window.addEventListener('touchstart', this._handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', this._handleTouchMove, { passive: true });
+    window.addEventListener('touchend', this._handleTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', this._handleTouchEnd, { passive: true });
   }
 
   _unbindEvents() {
-    if (typeof window === 'undefined' || !this.canvas) return;
+    if (typeof window === 'undefined') return;
 
     window.removeEventListener('resize', this._handleResize);
     if (this._handleResize.cancel) this._handleResize.cancel();
 
-    this.canvas.removeEventListener('mousemove', this._handlePointerMove);
-    this.canvas.removeEventListener('mouseleave', this._handlePointerLeave);
-    this.canvas.removeEventListener('mouseenter', this._handlePointerEnter);
-    this.canvas.removeEventListener('click', this._handleClick);
+    window.removeEventListener('mousemove', this._handlePointerMove);
+    window.removeEventListener('mouseleave', this._handlePointerLeave);
+    window.removeEventListener('click', this._handleClick);
 
-    this.canvas.removeEventListener('touchstart', this._handleTouchStart);
-    this.canvas.removeEventListener('touchmove', this._handleTouchMove);
-    this.canvas.removeEventListener('touchend', this._handleTouchEnd);
-    this.canvas.removeEventListener('touchcancel', this._handleTouchEnd);
+    window.removeEventListener('touchstart', this._handleTouchStart);
+    window.removeEventListener('touchmove', this._handleTouchMove);
+    window.removeEventListener('touchend', this._handleTouchEnd);
+    window.removeEventListener('touchcancel', this._handleTouchEnd);
   }
 
   start() {

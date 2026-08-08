@@ -6,10 +6,10 @@
     <title>V Labs — Web & Business Automation | Global Digital Studio</title>
     <meta name="description" content="Bring the idea. We forge the proof in one day. V Labs builds custom Web, Mobile Apps, AI Automations, and CRMs with zero retainers.">
     
-    <!-- Google Fonts: Cinzel & Plus Jakarta Sans -->
+    <!-- Google Fonts: Cinzel, Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -35,11 +35,15 @@
                             200: '#E5E5E5', // Muted Soft White
                             300: '#D1D1D1', // Secondary Text / Subtle Borders
                             400: '#9CA3AF',
-                        }
+                        },
+                        goldAccent: '#F59E0B',
+                        roseAccent: '#E11D48',
+                        whatsappGreen: '#22C55E'
                     },
                     fontFamily: {
                         heading: ['Cinzel', 'serif'],
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     }
                 }
             }
@@ -47,11 +51,35 @@
     </script>
 
     <style>
+        /* UI/UX Pro Max Design System Tokens */
+        :root {
+            /* Color Tokens */
+            --color-bg-start: #4A0000;
+            --color-bg-end: #1A0202;
+            --color-surface-card: rgba(45, 5, 5, 0.65);
+            --color-surface-nav: rgba(26, 2, 2, 0.85);
+            --color-surface-modal: rgba(30, 3, 3, 0.94);
+            --color-text-primary: #FFFFFF;
+            --color-text-secondary: #E5E5E5;
+            --color-text-muted: #D1D1D1;
+            --color-accent-crimson: #E11D48;
+            --color-accent-gold: #F59E0B;
+            --color-accent-whatsapp: #22C55E;
+            --color-border-subtle: rgba(229, 229, 229, 0.2);
+            --color-border-hover: rgba(255, 255, 255, 0.45);
+            --color-focus-ring: rgba(225, 29, 72, 0.7);
+
+            /* Typography Pairings */
+            --font-heading: 'Cinzel', serif;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
         /* Base Styling & Strict GPU-Accelerated Animations (transform & opacity ONLY) */
         body {
-            background: linear-gradient(180deg, #4A0000 0%, #1A0202 100%);
-            color: #FFFFFF;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(180deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
+            color: var(--color-text-primary);
+            font-family: var(--font-sans);
             overflow-x: hidden;
             will-change: auto;
         }
@@ -72,28 +100,28 @@
 
         /* Glassmorphic Container Rules with Pure White / Light Gray Accents */
         .glass-card {
-            background: rgba(45, 5, 5, 0.65);
+            background: var(--color-surface-card);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(229, 229, 229, 0.2);
+            border: 1px solid var(--color-border-subtle);
             transition: transform 0.3s ease, opacity 0.3s ease;
             will-change: transform, opacity;
         }
 
         .glass-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(255, 255, 255, 0.45);
+            border-color: var(--color-border-hover);
         }
 
         .glass-nav {
-            background: rgba(26, 2, 2, 0.85);
+            background: var(--color-surface-nav);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(229, 229, 229, 0.15);
         }
 
         .glass-modal {
-            background: rgba(30, 3, 3, 0.94);
+            background: var(--color-surface-modal);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.25);
@@ -108,6 +136,23 @@
             }
             .glass-nav {
                 background: rgba(26, 2, 2, 0.95) !important;
+            }
+        }
+
+        /* Keyboard Accessibility Focus Visible Ring */
+        :focus-visible {
+            outline: 2px solid var(--color-accent-crimson);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px var(--color-focus-ring);
+        }
+
+        /* Reduced Motion Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
 

@@ -441,87 +441,96 @@
                 </p>
             </div>
 
-            <!-- Capabilities Grid (9 Tech Capabilities) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 1. Websites -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
-                        <i class="fa-solid fa-globe"></i>
+            <!-- Capabilities Bento Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Bento Feature 1: Hero AI Receptionist (Spans 2 Cols) -->
+                <div class="md:col-span-2 glass-card rounded-3xl p-8 border border-white/40 hover:border-white/80 transition-all duration-300 relative overflow-hidden bg-gradient-to-br from-crimson-900/90 to-crimson-950/95 shadow-2xl group">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center space-x-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>24/7 AI Receptionist</span>
+                        </span>
                     </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">Websites</h3>
-                    <p class="text-sm text-mutedGray-200">Business, Portfolio, E-commerce & more designed for maximum speed and conversion.</p>
+                    <h3 class="font-heading text-2xl sm:text-3xl font-bold text-white mb-3">AI WhatsApp Receptionists</h3>
+                    <p class="text-sm sm:text-base text-mutedGray-200 leading-relaxed max-w-xl mb-6">
+                        Powered by Google Gemini 1.5 Flash. Qualifies leads, schedules slots, and writes customer entries straight to your Google Sheet CRM automatically.
+                    </p>
+                    <div class="flex items-center space-x-4 text-xs font-mono text-mutedGray-300 border-t border-white/10 pt-4">
+                        <span><i class="fa-solid fa-bolt text-amber-400 mr-1"></i>Sub-100ms FAQ Engine</span>
+                        <span><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>Zero Key Exposure</span>
+                    </div>
                 </div>
 
-                <!-- 2. Web Apps -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
+                <!-- Bento Feature 2: High-Velocity Web & Apps -->
+                <div class="glass-card rounded-3xl p-8 border border-white/30 hover:border-white/60 transition-all duration-300 bg-crimson-950/80 shadow-xl group">
+                    <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-6 group-hover:scale-110 transition-transform">
                         <i class="fa-solid fa-code"></i>
                     </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">Web Apps</h3>
-                    <p class="text-sm text-mutedGray-200">Custom web applications tailored to your exact operational workflows and logic.</p>
+                    <h3 class="font-heading text-xl font-bold text-white mb-2">Web & Web Apps</h3>
+                    <p class="text-sm text-mutedGray-200 leading-relaxed">
+                        Custom high-speed websites and web applications engineered for 24-hour turnaround and max conversion.
+                    </p>
                 </div>
 
-                <!-- 3. AI Chatbots -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
-                        <i class="fa-solid fa-robot"></i>
-                    </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">AI Chatbots</h3>
-                    <p class="text-sm text-mutedGray-200">Smart chatbots powered by Gemini 1.5 Flash for 24/7 support & lead generation.</p>
-                </div>
-
-                <!-- 4. E-commerce -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
+                <!-- Bento Feature 3: E-commerce Stores -->
+                <div class="glass-card rounded-3xl p-8 border border-white/30 hover:border-white/60 transition-all duration-300 bg-crimson-950/80 shadow-xl group">
+                    <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-6 group-hover:scale-110 transition-transform">
                         <i class="fa-solid fa-cart-shopping"></i>
                     </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">E-commerce</h3>
-                    <p class="text-sm text-mutedGray-200">High-converting online stores with payment gateways and seamless checkout flows.</p>
+                    <h3 class="font-heading text-xl font-bold text-white mb-2">E-commerce Stores</h3>
+                    <p class="text-sm text-mutedGray-200 leading-relaxed">
+                        High-converting digital storefronts with seamless checkout flows and instant order notifications.
+                    </p>
                 </div>
 
-                <!-- 5. CRM / ERP -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
-                        <i class="fa-solid fa-database"></i>
+                <!-- Bento Feature 4: CRM & Google Sheet Sync (Spans 2 Cols) -->
+                <div class="md:col-span-2 glass-card rounded-3xl p-8 border border-white/30 hover:border-white/60 transition-all duration-300 bg-gradient-to-r from-crimson-950/90 to-crimson-900/80 shadow-xl group">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">Google Apps Script CRM</span>
                     </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">CRM / ERP</h3>
-                    <p class="text-sm text-mutedGray-200">Manage smarter with custom dashboards, lead tracking, and Google Sheet webhooks.</p>
+                    <h3 class="font-heading text-xl sm:text-2xl font-bold text-white mb-2">CRM Dashboards & Sheets Sync</h3>
+                    <p class="text-sm text-mutedGray-200 leading-relaxed max-w-xl">
+                        Track leads and manage operations with custom dashboards, webhook bridges, and zero monthly SaaS fees.
+                    </p>
                 </div>
 
-                <!-- 6. Automation -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
+                <!-- Bento Feature 5: Automation & Workflows -->
+                <div class="glass-card rounded-3xl p-8 border border-white/30 hover:border-white/60 transition-all duration-300 bg-crimson-950/80 shadow-xl group">
+                    <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-6 group-hover:scale-110 transition-transform">
                         <i class="fa-solid fa-gears"></i>
                     </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">Automation</h3>
-                    <p class="text-sm text-mutedGray-200">Workflows & process automation to eliminate repetitive manual task bottlenecks.</p>
+                    <h3 class="font-heading text-xl font-bold text-white mb-2">Process Automation</h3>
+                    <p class="text-sm text-mutedGray-200 leading-relaxed">
+                        Automated operational workflows that eliminate manual task bottlenecks.
+                    </p>
                 </div>
 
-                <!-- 7. UI / UX Design -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
+                <!-- Bento Feature 6: UI / UX Design -->
+                <div class="glass-card rounded-3xl p-8 border border-white/30 hover:border-white/60 transition-all duration-300 bg-crimson-950/80 shadow-xl group">
+                    <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-6 group-hover:scale-110 transition-transform">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">UI / UX Design</h3>
-                    <p class="text-sm text-mutedGray-200">Modern, clean & conversion focused interfaces crafted with pixel precision.</p>
+                    <h3 class="font-heading text-xl font-bold text-white mb-2">UI / UX Craftsmanship</h3>
+                    <p class="text-sm text-mutedGray-200 leading-relaxed">
+                        Modern, premium visual design crafted with pixel precision and GPU animation constraints.
+                    </p>
                 </div>
 
-                <!-- 8. Landing Pages -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
+                <!-- Bento Feature 7: High-ROI Landing Pages -->
+                <div class="glass-card rounded-3xl p-8 border border-white/30 hover:border-white/60 transition-all duration-300 bg-crimson-950/80 shadow-xl group">
+                    <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-6 group-hover:scale-110 transition-transform">
                         <i class="fa-solid fa-rocket"></i>
                     </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">Landing Pages</h3>
-                    <p class="text-sm text-mutedGray-200">High converting landing pages optimized for mobile devices and high ad ROI.</p>
-                </div>
-
-                <!-- 9. Integrations -->
-                <div class="glass-card rounded-2xl p-6 border border-white/20 hover:border-white/60 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/30 flex items-center justify-center text-white text-xl mb-4">
-                        <i class="fa-solid fa-plug"></i>
-                    </div>
-                    <h3 class="font-heading text-lg font-bold text-white mb-2">Integrations</h3>
-                    <p class="text-sm text-mutedGray-200">API integrations & third-party tools connecting WhatsApp Cloud, Apps Script & CRM.</p>
+                    <h3 class="font-heading text-xl font-bold text-white mb-2">Landing Pages</h3>
+                    <p class="text-sm text-mutedGray-200 leading-relaxed">
+                        Mobile-first landing pages optimized for fast load speed and high ad conversion rates.
+                    </p>
                 </div>
             </div>
         </section>

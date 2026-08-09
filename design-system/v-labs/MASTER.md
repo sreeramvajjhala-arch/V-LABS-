@@ -48,14 +48,14 @@ For browsers or low-power mobile engines that do not support `backdrop-filter`:
 
 ---
 
-## 2. Typography & Font Pairings
+## 2. Typography & Font Pairings (Option 4: Swiss Geometric Minimalist)
 
 ### Google Fonts System
 
-1. **Heading Display Font:** `Cinzel` (`500`, `700`, `800`, `900`)
-   - *Style:* Regal serif display font.
-   - *Usage:* Brand logo `V LABS`, main section titles (`h1`, `h2`), modal headlines.
-   - *Tracking:* `letter-spacing: 0.05em` to `0.1em` for luxury aesthetic.
+1. **Heading Display Font:** `Outfit` (`500`, `600`, `700`, `800`, `900`)
+   - *Style:* Ultra-clean, geometric display sans-serif.
+   - *Usage:* Main section titles (`h1`, `h2`), modal headlines, feature card headers.
+   - *Tracking:* `letter-spacing: -0.02em` (`tracking-tight`) to `0.02em`.
 
 2. **Body & UI Font:** `Plus Jakarta Sans` (`300`, `400`, `500`, `600`, `700`, `800`)
    - *Style:* Modern, highly legible geometric sans-serif.
@@ -69,7 +69,7 @@ For browsers or low-power mobile engines that do not support `backdrop-filter`:
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 ```
 
 ### Fluid Typography Token Scale

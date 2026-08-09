@@ -32,10 +32,7 @@ const _resolveLodash = () => {
       const rand = Math.random() * (max - min) + min;
       return floating ? rand : Math.floor(rand);
     },
-    clamp: (val, min, max) => {
-      if (typeof val !== 'number' || !Number.isFinite(val)) return min;
-      return Math.min(Math.max(val, min), max);
-    },
+    clamp: (val, min, max) => (Number.isFinite(val) ? Math.max(min, Math.min(val, max)) : min),
     sample: (arr) => arr[Math.floor(Math.random() * arr.length)],
     range: (n) => Array.from({ length: Math.max(0, n) }, (_, i) => i),
     debounce: (fn, wait) => {

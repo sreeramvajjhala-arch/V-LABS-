@@ -429,27 +429,56 @@ function getFallbackAiResponse(msg) {
     return "Hello! I'm V Labs AI. We build 24h custom websites & WhatsApp bots. Could you share your business name and WhatsApp number?";
 }
 
-// UI Helpers for Chat Messages with Robot Icon Avatar
+// UI Helpers for Chat Messages with Official Emblem & Markdown Formatting
+function getTimeString() {
+    try {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch {
+        return '';
+    }
+}
+
+function formatMessageText(str) {
+    if (typeof str !== 'string') return '';
+    let safe = escapeHtml(str);
+    safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+    safe = safe.replace(/`([^`]+)`/g, '<code class="bg-crimson-950/80 px-1.5 py-0.5 rounded text-[11px] font-mono text-amber-300 border border-white/10">$1</code>');
+    safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-amber-300 underline hover:text-white transition-colors">$1</a>');
+    safe = safe.replace(/\n/g, '<br>');
+    return safe;
+}
+
 function appendChatMessage(sender, text, shouldScroll = true) {
     const feed = document.getElementById('chat-feed');
     if (!feed) return;
 
     const msgDiv = document.createElement('div');
-    msgDiv.className = sender === 'user' ? 'flex items-start space-x-2.5 justify-end' : 'flex items-start space-x-2.5';
+    const timeStr = getTimeString();
 
     if (sender === 'user') {
+        msgDiv.className = 'flex items-start space-x-2.5 justify-end animate-msg';
         msgDiv.innerHTML = `
-            <div class="bg-white/20 border border-white/30 rounded-2xl rounded-tr-none p-3.5 text-white max-w-[85%]">
-                ${escapeHtml(text)}
+            <div class="bg-gradient-to-r from-crimson-700 to-crimson-800 border border-white/25 rounded-2xl rounded-tr-xs p-3.5 sm:p-4 text-white max-w-[85%] shadow-md">
+                <div class="flex items-center justify-between border-b border-white/10 pb-1 mb-1.5 text-[10px] text-mutedGray-200">
+                    <span class="font-semibold text-white">You</span>
+                    <span>${timeStr}</span>
+                </div>
+                <div class="leading-relaxed text-xs sm:text-sm">${formatMessageText(text)}</div>
             </div>
         `;
     } else {
+        msgDiv.className = 'flex items-start space-x-3 animate-msg';
         msgDiv.innerHTML = `
-            <div class="w-7 h-7 rounded-full bg-white text-crimson-950 font-extrabold text-xs flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-robot text-xs text-crimson-950"></i>
-            </div>
-            <div class="bg-crimson-800/70 border border-mutedGray-300/25 rounded-2xl rounded-tl-none p-3.5 text-white max-w-[85%]">
-                ${escapeHtml(text)}
+            <img src="assets/vlabs-logo.jpg" alt="V Labs Bot" class="w-8 h-8 rounded-xl border border-white/30 object-cover shrink-0 shadow-md">
+            <div class="bg-crimson-800/90 border border-white/20 rounded-2xl rounded-tl-xs p-3.5 sm:p-4 text-white max-w-[85%] shadow-lg">
+                <div class="flex items-center justify-between border-b border-white/10 pb-1.5 mb-2">
+                    <span class="text-xs font-bold text-amber-300 flex items-center space-x-1">
+                        <i class="fa-solid fa-sparkles text-[10px]"></i>
+                        <span>V Labs AI Assistant</span>
+                    </span>
+                    <span class="text-[10px] text-mutedGray-300">${timeStr}</span>
+                </div>
+                <div class="leading-relaxed text-xs sm:text-sm text-mutedGray-100">${formatMessageText(text)}</div>
             </div>
         `;
     }
@@ -467,15 +496,16 @@ function appendLoadingIndicator() {
     const id = 'loading-' + Date.now();
     const loadingDiv = document.createElement('div');
     loadingDiv.id = id;
-    loadingDiv.className = 'flex items-start space-x-2.5';
+    loadingDiv.className = 'flex items-start space-x-3 animate-msg';
     loadingDiv.innerHTML = `
-        <div class="w-7 h-7 rounded-full bg-white text-crimson-950 font-extrabold text-xs flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-robot text-xs text-crimson-950"></i>
-        </div>
-        <div class="bg-crimson-800/70 border border-mutedGray-300/25 rounded-2xl rounded-tl-none p-3.5 text-white max-w-[85%] flex items-center space-x-1">
-            <span class="w-2 h-2 rounded-full bg-white animate-bounce"></span>
-            <span class="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:0.2s]"></span>
-            <span class="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:0.4s]"></span>
+        <img src="assets/vlabs-logo.jpg" alt="V Labs Bot" class="w-8 h-8 rounded-xl border border-white/30 object-cover shrink-0 shadow-md">
+        <div class="bg-crimson-800/90 border border-white/20 rounded-2xl rounded-tl-xs px-4 py-3 text-white flex items-center space-x-2 shadow-lg">
+            <span class="text-xs text-mutedGray-200 font-medium">V Labs AI is typing</span>
+            <div class="flex items-center space-x-1 pl-1">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-bounce"></span>
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-bounce [animation-delay:0.2s]"></span>
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-bounce [animation-delay:0.4s]"></span>
+            </div>
         </div>
     `;
     feed.appendChild(loadingDiv);

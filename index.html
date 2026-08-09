@@ -76,6 +76,11 @@
         }
 
         /* Base Styling & Strict GPU-Accelerated Animations (transform & opacity ONLY) */
+        .font-heading {
+            font-family: var(--font-heading);
+            letter-spacing: -0.025em;
+        }
+
         body {
             background: linear-gradient(180deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
             color: var(--color-text-primary);
@@ -243,10 +248,10 @@
                     <img src="assets/vlabs-logo.jpg" alt="V Labs Official Logo" class="h-10 sm:h-12 w-auto object-contain rounded-lg">
                 </div>
                 <div class="flex flex-col">
-                    <span class="font-heading font-black text-xl sm:text-2xl tracking-wider text-white group-hover:text-mutedGray-200 transition-colors">
+                    <span class="font-heading font-bold text-xl sm:text-2xl tracking-tight text-white group-hover:text-mutedGray-200 transition-colors">
                         V LABS
                     </span>
-                    <span class="text-[9px] sm:text-[10px] tracking-[0.2em] font-semibold text-mutedGray-300 uppercase">
+                    <span class="text-[9px] sm:text-[10px] tracking-[0.15em] font-semibold text-mutedGray-300 uppercase">
                         WEB & BUSINESS AUTOMATION
                     </span>
                 </div>
